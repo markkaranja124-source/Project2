@@ -18,20 +18,37 @@ export interface NextBookRecommendation {
   author: string;
   genre: string;
   coverGradient: string;
-  reasonTag: string; // e.g. "Deeper Sci-Fi Worldbuilding", "Palate Cleanser", "Same Author"
+  coverImage?: string;
+  reasonTag: string;
   description: string;
   estimatedPages: number;
-  matchScore: number; // e.g. 96 (%)
-  existingBookId?: string; // If it points to a book already in library
+  matchScore: number;
+  existingBookId?: string;
 }
 
 export interface BookReview {
-  rating: number; // 1-5
+  rating: number;
   completedDate: string;
   favoriteQuote?: string;
   keyTakeaway?: string;
   selectedMoods: MoodTag[];
   chosenNextBookId?: string;
+}
+
+export interface QuizQuestion {
+  id: string;
+  questionText: string;
+  options: string[];
+  correctOptionIndex: number;
+  explanation: string;
+  keyConcept: string;
+}
+
+export interface ChapterQuiz {
+  chapterNumber: number;
+  chapterTitle: string;
+  summaryText: string;
+  questions: QuizQuestion[];
 }
 
 export interface Book {
@@ -44,6 +61,7 @@ export interface Book {
   status: ReadingStatus;
   format: BookFormat;
   coverGradient: string;
+  coverImage?: string;
   coverEmoji?: string;
   rating?: number;
   startDate?: string;
@@ -51,9 +69,10 @@ export interface Book {
   description: string;
   notes?: string;
   review?: BookReview;
+  chapterQuizzes?: ChapterQuiz[];
   flowRecommendations?: NextBookRecommendation[];
-  previousBookId?: string; // The book finished right before this one in the flow
-  flowConnectionReason?: string; // Reason why this book was picked after previousBookId
+  previousBookId?: string;
+  flowConnectionReason?: string;
 }
 
 export interface ReadChainNode {
@@ -64,6 +83,7 @@ export interface ReadChainNode {
   completedDate: string;
   rating: number;
   coverGradient: string;
+  coverImage?: string;
   nextBookId?: string;
   reasonToNext?: string;
 }
@@ -73,4 +93,6 @@ export interface UserReadingGoal {
   currentYearCount: number;
   streakDays: number;
   lastReadDate: string;
+  memoryQuizScoreTotal: number;
+  quizzesCompletedCount: number;
 }

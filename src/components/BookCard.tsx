@@ -11,14 +11,14 @@ import {
   Headphones, 
   Tablet, 
   BookmarkCheck,
-  ArrowRight
+  Brain
 } from 'lucide-react';
 
 interface BookCardProps {
   book: Book;
   onUpdateProgress: (bookId: string, newPage: number) => void;
-  onStatusChange: (bookId: string, status: ReadingStatus) => void;
   onTriggerCompletionFlow: (book: Book) => void;
+  onOpenChapterQuiz?: (bookId: string) => void;
   onDeleteBook: (bookId: string) => void;
 }
 
@@ -26,6 +26,7 @@ export const BookCard: React.FC<BookCardProps> = ({
   book,
   onUpdateProgress,
   onTriggerCompletionFlow,
+  onOpenChapterQuiz,
   onDeleteBook,
 }) => {
   const [isEditingPage, setIsEditingPage] = useState(false);
@@ -101,37 +102,42 @@ export const BookCard: React.FC<BookCardProps> = ({
   return (
     <div className="glass-card rounded-2xl p-4 lg:p-5 flex flex-col md:flex-row gap-5 hover:border-slate-600/60 transition-all duration-300 group">
       
-      {/* 3D Book Cover Graphic */}
+      {/* 3D Book Cover Graphic or Image */}
       <div className="relative flex-shrink-0 self-center md:self-start">
-        <div 
-          className={`w-32 h-44 lg:w-36 lg:h-52 rounded-xl bg-gradient-to-br ${book.coverGradient} book-cover-3d flex flex-col justify-between p-3.5 text-white overflow-hidden select-none`}
-        >
-          {/* Cover Header */}
-          <div className="flex items-center justify-between text-xs opacity-90">
-            <span className="font-semibold tracking-wider uppercase text-[10px] bg-black/30 px-1.5 py-0.5 rounded backdrop-blur-sm">
+        {book.coverImage ? (
+          <div className="w-32 h-44 lg:w-36 lg:h-52 rounded-xl overflow-hidden shadow-xl border border-slate-700 book-cover-3d relative">
+            <img src={book.coverImage} alt={book.title} className="w-full h-full object-cover object-center" />
+            <div className="absolute bottom-2 left-2 right-2 bg-black/60 backdrop-blur-xs rounded px-1.5 py-0.5 text-[9px] text-amber-200 text-center font-bold">
               {book.genre}
-            </span>
-            <span className="text-lg">{book.coverEmoji || '📖'}</span>
+            </div>
           </div>
+        ) : (
+          <div 
+            className={`w-32 h-44 lg:w-36 lg:h-52 rounded-xl bg-gradient-to-br ${book.coverGradient} book-cover-3d flex flex-col justify-between p-3.5 text-white overflow-hidden select-none`}
+          >
+            <div className="flex items-center justify-between text-xs opacity-90">
+              <span className="font-semibold tracking-wider uppercase text-[10px] bg-black/30 px-1.5 py-0.5 rounded backdrop-blur-sm">
+                {book.genre}
+              </span>
+              <span className="text-lg">{book.coverEmoji || '📖'}</span>
+            </div>
 
-          {/* Book Title & Author on Cover */}
-          <div className="my-auto z-10 text-center px-1">
-            <h3 className="font-serif-book font-bold text-base lg:text-lg leading-snug drop-shadow-md line-clamp-3">
-              {book.title}
-            </h3>
-            <p className="text-xs opacity-90 mt-1 font-sans font-medium drop-shadow text-amber-100">
-              {book.author}
-            </p>
+            <div className="my-auto z-10 text-center px-1">
+              <h3 className="font-serif-book font-bold text-base lg:text-lg leading-snug drop-shadow-md line-clamp-3">
+                {book.title}
+              </h3>
+              <p className="text-xs opacity-90 mt-1 font-sans font-medium drop-shadow text-amber-100">
+                {book.author}
+              </p>
+            </div>
+
+            <div className="flex items-center justify-between text-[10px] opacity-85 z-10 pt-1 border-t border-white/20">
+              <span className="capitalize">{book.format}</span>
+              <span>{book.totalPages} pgs</span>
+            </div>
           </div>
+        )}
 
-          {/* Cover Footer format badge */}
-          <div className="flex items-center justify-between text-[10px] opacity-85 z-10 pt-1 border-t border-white/20">
-            <span className="capitalize">{book.format}</span>
-            <span>{book.totalPages} pgs</span>
-          </div>
-        </div>
-
-        {/* Previous Flow Connector pill if part of flow */}
         {book.flowConnectionReason && (
           <div className="mt-2 text-[10px] text-purple-300 bg-purple-950/60 border border-purple-500/30 rounded-lg px-2 py-1 flex items-center gap-1 max-w-[140px] truncate" title={book.flowConnectionReason}>
             <GitBranch className="w-3 h-3 text-purple-400 flex-shrink-0" />
@@ -140,11 +146,9 @@ export const BookCard: React.FC<BookCardProps> = ({
         )}
       </div>
 
-      {/* Book Information & Progress Controls */}
+      {/* Book Info */}
       <div className="flex-grow flex flex-col justify-between">
-        
         <div>
-          {/* Status & Genre Header */}
           <div className="flex items-center justify-between gap-2 flex-wrap mb-2">
             <div className="flex items-center gap-2">
               {getStatusBadge(book.status)}
@@ -154,7 +158,6 @@ export const BookCard: React.FC<BookCardProps> = ({
               </div>
             </div>
 
-            {/* Quick Actions (Delete) */}
             <button
               onClick={() => onDeleteBook(book.id)}
               className="text-gray-500 hover:text-red-400 p-1 rounded-lg hover:bg-slate-800/80 transition-colors"
@@ -164,7 +167,6 @@ export const BookCard: React.FC<BookCardProps> = ({
             </button>
           </div>
 
-          {/* Book Title & Author */}
           <h2 className="font-serif-book text-xl lg:text-2xl font-bold text-gray-100 group-hover:text-amber-300 transition-colors">
             {book.title}
           </h2>
@@ -172,12 +174,10 @@ export const BookCard: React.FC<BookCardProps> = ({
             by {book.author}
           </p>
 
-          {/* Description */}
           <p className="text-xs text-gray-400 line-clamp-2 mb-3 leading-relaxed">
             {book.description}
           </p>
 
-          {/* Rating Display if completed */}
           {book.status === 'completed' && book.rating && (
             <div className="mb-3 flex items-center gap-3 bg-emerald-950/40 border border-emerald-500/20 rounded-xl p-2.5">
               <div className="flex items-center gap-1 text-amber-400">
@@ -201,9 +201,8 @@ export const BookCard: React.FC<BookCardProps> = ({
           )}
         </div>
 
-        {/* Progress Bar & Interactive Controls */}
+        {/* Progress & Quick Actions */}
         <div className="mt-2 pt-3 border-t border-slate-800/80">
-          
           <div className="flex items-center justify-between text-xs mb-1.5">
             <span className="text-gray-400 font-medium">Reading Progress</span>
             <div className="flex items-center gap-2 font-semibold">
@@ -226,7 +225,6 @@ export const BookCard: React.FC<BookCardProps> = ({
                     setIsEditingPage(true);
                   }}
                   className="hover:text-amber-300 underline decoration-dashed transition-colors"
-                  title="Click to edit current page"
                 >
                   {book.currentPage} / {book.totalPages} pgs ({progressPercent}%)
                 </button>
@@ -234,7 +232,6 @@ export const BookCard: React.FC<BookCardProps> = ({
             </div>
           </div>
 
-          {/* Progress Slider Track */}
           <div className="relative w-full h-2.5 bg-slate-900 rounded-full overflow-hidden mb-3 border border-slate-800">
             <div
               className={`h-full transition-all duration-500 ${
@@ -246,10 +243,7 @@ export const BookCard: React.FC<BookCardProps> = ({
             />
           </div>
 
-          {/* Bottom Action Strip */}
           <div className="flex items-center justify-between gap-2 flex-wrap">
-            
-            {/* Quick Progress Logger Buttons */}
             {book.status !== 'completed' ? (
               <div className="flex items-center gap-1.5">
                 <button
@@ -269,36 +263,30 @@ export const BookCard: React.FC<BookCardProps> = ({
               </div>
             ) : (
               <div className="text-xs text-emerald-400 font-medium">
-                Completed on {book.completedDate || 'Recently'}
+                Finished on {book.completedDate || 'Recently'}
               </div>
             )}
 
-            {/* Status Switcher & Completion Flow Trigger Button */}
             <div className="flex items-center gap-2 ml-auto">
-              
-              {book.status !== 'completed' && (
+              {book.chapterQuizzes && onOpenChapterQuiz && (
                 <button
-                  onClick={() => onTriggerCompletionFlow(book)}
-                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-400 hover:to-orange-500 text-slate-950 font-bold text-xs shadow-md shadow-amber-500/20 transition-all active:scale-95"
+                  onClick={() => onOpenChapterQuiz(book.id)}
+                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-purple-500/20 hover:bg-purple-500/30 border border-purple-500/40 text-purple-200 text-xs font-semibold transition-all"
+                  title="Test memory with active recall quiz"
                 >
-                  <CheckCircle2 className="w-3.5 h-3.5 stroke-[2.5]" />
-                  <span>Mark Finished & Start Next Flow</span>
+                  <Brain className="w-3.5 h-3.5 text-purple-400" />
+                  <span>Chapter Quiz</span>
                 </button>
               )}
 
-              {book.status === 'completed' && (
-                <button
-                  onClick={() => onTriggerCompletionFlow(book)}
-                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-purple-500/20 border border-purple-500/40 text-purple-300 hover:bg-purple-500/30 text-xs font-semibold transition-all"
-                >
-                  <GitBranch className="w-3.5 h-3.5 text-purple-400" />
-                  <span>View Next Read Flow</span>
-                  <ArrowRight className="w-3 h-3" />
-                </button>
-              )}
-
+              <button
+                onClick={() => onTriggerCompletionFlow(book)}
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-400 text-slate-950 font-bold text-xs shadow-md shadow-amber-500/20 transition-all active:scale-95"
+              >
+                <CheckCircle2 className="w-3.5 h-3.5 stroke-[2.5]" />
+                <span>Next Read Flow</span>
+              </button>
             </div>
-
           </div>
 
         </div>

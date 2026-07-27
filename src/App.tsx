@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo } from 'react';
-import type { Book, ReadingStatus, UserReadingGoal, MoodTag } from './types/book';
+import type { Book, ReadingStatus, UserReadingGoal, MoodTag, QuizQuestion } from './types/book';
 import { 
   loadBooksFromStorage, 
   saveBooksToStorage, 
@@ -10,7 +10,10 @@ import {
 } from './services/storage';
 
 import { Header } from './components/Header';
+import { HeroBanner } from './components/HeroBanner';
 import { BookCard } from './components/BookCard';
+import { VisualBookGallery } from './components/VisualBookGallery';
+import { ChapterMemoryLab } from './components/ChapterMemoryLab';
 import { CompletionModal } from './components/CompletionModal';
 import { ReadChainGraph } from './components/ReadChainGraph';
 import { AnalyticsView } from './components/AnalyticsView';
@@ -22,19 +25,21 @@ export default function App() {
   const [books, setBooks] = useState<Book[]>(loadBooksFromStorage);
   const [goal, setGoal] = useState<UserReadingGoal>(loadGoalFromStorage);
 
-  const [activeTab, setActiveTab] = useState<'library' | 'flow-chain' | 'analytics'>('library');
+  const [activeTab, setActiveTab] = useState<'library' | 'gallery' | 'chapter-memory' | 'flow-chain' | 'analytics'>('library');
   const [activeShelf, setActiveShelf] = useState<ReadingStatus | 'all'>('all');
   const [searchQuery, setSearchQuery] = useState('');
+
+  // Target book for Chapter Memory Lab
+  const [quizBookId, setQuizBookId] = useState<string | null>(null);
 
   // Modals state
   const [completionBook, setCompletionBook] = useState<Book | null>(null);
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
 
-  // Sync books to storage on state change
+  // Sync books to storage
   useEffect(() => {
     saveBooksToStorage(books);
     
-    // Update goal completed count based on books
     const completedCount = books.filter(b => b.status === 'completed').length;
     if (completedCount !== goal.currentYearCount) {
       const updatedGoal = { ...goal, currentYearCount: completedCount };
@@ -43,14 +48,53 @@ export default function App() {
     }
   }, [books]);
 
-  // Sync goal changes to storage
+  // Sync goal updates
   const handleUpdateGoalTarget = (newTarget: number) => {
     const updated = { ...goal, targetBooksYearly: newTarget };
     setGoal(updated);
     saveGoalToStorage(updated);
   };
 
-  // Handler for progress updates
+  // Handle quiz score completion
+  const handleCompleteQuiz = (scorePercent: number) => {
+    const updatedGoal: UserReadingGoal = {
+      ...goal,
+      memoryQuizScoreTotal: (goal.memoryQuizScoreTotal || 0) + scorePercent,
+      quizzesCompletedCount: (goal.quizzesCompletedCount || 0) + 1,
+      streakDays: goal.streakDays + 1
+    };
+    setGoal(updatedGoal);
+    saveGoalToStorage(updatedGoal);
+  };
+
+  // Add custom chapter question
+  const handleAddCustomQuestion = (bookId: string, chapterNumber: number, question: QuizQuestion) => {
+    setBooks(prev => prev.map(b => {
+      if (b.id === bookId) {
+        const quizzes = b.chapterQuizzes || [];
+        const existingChap = quizzes.find(q => q.chapterNumber === chapterNumber);
+        
+        let updatedQuizzes;
+        if (existingChap) {
+          updatedQuizzes = quizzes.map(q => q.chapterNumber === chapterNumber 
+            ? { ...q, questions: [...q.questions, question] }
+            : q
+          );
+        } else {
+          updatedQuizzes = [...quizzes, {
+            chapterNumber,
+            chapterTitle: `Chapter ${chapterNumber}`,
+            summaryText: 'User defined chapter active recall quiz.',
+            questions: [question]
+          }];
+        }
+        return { ...b, chapterQuizzes: updatedQuizzes };
+      }
+      return b;
+    }));
+  };
+
+  // Page progress update
   const handleUpdateProgress = (bookId: string, newPage: number) => {
     setBooks(prev => prev.map(b => {
       if (b.id === bookId) {
@@ -66,19 +110,13 @@ export default function App() {
     }));
   };
 
-  // Handler for manual status changes
-  const handleStatusChange = (bookId: string, status: ReadingStatus) => {
-    setBooks(prev => prev.map(b => b.id === bookId ? { ...b, status } : b));
-  };
-
-  // Delete book handler
+  // Delete book
   const handleDeleteBook = (bookId: string) => {
     setBooks(prev => prev.filter(b => b.id !== bookId));
   };
 
-  // Trigger Post-Read Completion Flow Modal
+  // Trigger Completion Flow Modal
   const handleTriggerCompletionFlow = (book: Book) => {
-    // Automatically set book as completed if not already
     if (book.status !== 'completed') {
       setBooks(prev => prev.map(b => b.id === book.id ? { 
         ...b, 
@@ -90,7 +128,7 @@ export default function App() {
     setCompletionBook(book);
   };
 
-  // Save review & process chosen recommendation flow
+  // Save review & next read flow recommendation
   const handleSaveReviewAndSelectNext = (
     bookId: string,
     reviewData: {
@@ -122,7 +160,6 @@ export default function App() {
         return b;
       });
 
-      // If user selected a next book recommendation to start or queue
       if (nextBookToStart && nextBookToStart.id) {
         const existingIndex = updated.findIndex(b => b.id === nextBookToStart.id);
         if (existingIndex >= 0) {
@@ -134,7 +171,6 @@ export default function App() {
             currentPage: nextBookToStart.status === 'currently-reading' ? (updated[existingIndex].currentPage || 1) : updated[existingIndex].currentPage
           };
         } else {
-          // Create new book entry from recommendation
           const newFlowBook: Book = {
             id: nextBookToStart.id,
             title: nextBookToStart.title || 'New Recommended Read',
@@ -156,7 +192,6 @@ export default function App() {
       return updated;
     });
 
-    // Boost reading streak
     setGoal(prev => ({
       ...prev,
       streakDays: prev.streakDays + 1,
@@ -164,12 +199,18 @@ export default function App() {
     }));
   };
 
-  // Add new book handler
+  // Open Quiz tab for specific book
+  const handleOpenChapterQuiz = (bookId: string) => {
+    setQuizBookId(bookId);
+    setActiveTab('chapter-memory');
+  };
+
+  // Add book
   const handleAddBook = (newBook: Book) => {
     setBooks(prev => [newBook, ...prev]);
   };
 
-  // Reset to default sample dataset
+  // Reset defaults
   const handleResetDemo = () => {
     if (window.confirm('Reset library to default sample dataset?')) {
       const { books: defaultBooks, goal: defaultGoal } = resetStorageToDefaults();
@@ -195,7 +236,7 @@ export default function App() {
   return (
     <div className="min-h-screen pb-16">
       
-      {/* Header Bar */}
+      {/* Top Navigation Bar */}
       <Header
         activeTab={activeTab}
         setActiveTab={setActiveTab}
@@ -209,7 +250,10 @@ export default function App() {
       {/* Main Content Area */}
       <main className="max-w-7xl mx-auto px-4 lg:px-8 pt-6">
         
-        {/* Tab 1: Library & Shelves */}
+        {/* Aesthetic Hero Feature Banner */}
+        <HeroBanner goal={goal} onNavigateTab={setActiveTab} />
+
+        {/* Tab 1: My Library & Shelves */}
         {activeTab === 'library' && (
           <div className="space-y-6">
             
@@ -267,8 +311,8 @@ export default function App() {
                     key={book.id}
                     book={book}
                     onUpdateProgress={handleUpdateProgress}
-                    onStatusChange={handleStatusChange}
                     onTriggerCompletionFlow={handleTriggerCompletionFlow}
+                    onOpenChapterQuiz={handleOpenChapterQuiz}
                     onDeleteBook={handleDeleteBook}
                   />
                 ))}
@@ -278,7 +322,26 @@ export default function App() {
           </div>
         )}
 
-        {/* Tab 2: Visual Post-Read Flow Chain Graph */}
+        {/* Tab 2: Visual Book Gallery */}
+        {activeTab === 'gallery' && (
+          <VisualBookGallery
+            books={books}
+            onOpenChapterQuiz={handleOpenChapterQuiz}
+            onTriggerCompletionFlow={handleTriggerCompletionFlow}
+          />
+        )}
+
+        {/* Tab 3: Chapter Memory Boost Lab */}
+        {activeTab === 'chapter-memory' && (
+          <ChapterMemoryLab
+            books={books}
+            initialBookId={quizBookId}
+            onCompleteQuiz={handleCompleteQuiz}
+            onAddCustomQuestion={handleAddCustomQuestion}
+          />
+        )}
+
+        {/* Tab 4: Visual Post-Read Flow Chain Graph */}
         {activeTab === 'flow-chain' && (
           <ReadChainGraph
             books={books}
@@ -290,7 +353,7 @@ export default function App() {
           />
         )}
 
-        {/* Tab 3: Reading Analytics */}
+        {/* Tab 5: Reading Analytics */}
         {activeTab === 'analytics' && (
           <AnalyticsView
             books={books}
@@ -301,7 +364,7 @@ export default function App() {
 
       </main>
 
-      {/* Completion Modal Trigger */}
+      {/* Completion Flow Modal */}
       {completionBook && (
         <CompletionModal
           book={completionBook}

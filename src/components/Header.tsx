@@ -1,10 +1,10 @@
 import React from 'react';
-import { BookOpen, GitFork, BarChart3, Plus, Flame, Target, Search, RotateCcw } from 'lucide-react';
+import { BookOpen, GitFork, BarChart3, Plus, Flame, Target, Search, RotateCcw, Brain, Image } from 'lucide-react';
 import type { UserReadingGoal } from '../types/book';
 
 interface HeaderProps {
-  activeTab: 'library' | 'flow-chain' | 'analytics';
-  setActiveTab: (tab: 'library' | 'flow-chain' | 'analytics') => void;
+  activeTab: 'library' | 'gallery' | 'chapter-memory' | 'flow-chain' | 'analytics';
+  setActiveTab: (tab: 'library' | 'gallery' | 'chapter-memory' | 'flow-chain' | 'analytics') => void;
   searchQuery: string;
   setSearchQuery: (query: string) => void;
   goal: UserReadingGoal;
@@ -26,9 +26,9 @@ export const Header: React.FC<HeaderProps> = ({
       <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
         
         {/* Brand & Tagline */}
-        <div className="flex items-center gap-3 self-start md:self-auto">
+        <div className="flex items-center gap-3 self-start md:self-auto cursor-pointer" onClick={() => setActiveTab('library')}>
           <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-amber-500 via-orange-600 to-amber-700 flex items-center justify-center shadow-lg shadow-amber-500/20 text-white font-bold text-xl">
-            <BookOpen className="w-5 h-5 text-slate-950" />
+            <BookOpen className="w-5 h-5 text-slate-950 stroke-[2.5]" />
           </div>
           <div>
             <div className="flex items-center gap-2">
@@ -36,17 +36,17 @@ export const Header: React.FC<HeaderProps> = ({
                 READFLOW
               </h1>
               <span className="text-[10px] uppercase tracking-widest font-semibold px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-400 border border-amber-500/20">
-                Post-Read Engine
+                v2 Active Recall
               </span>
             </div>
             <p className="text-xs text-gray-400 font-medium">
-              Track books & discover your next read flow
+              Book tracker, chapter memory lab & post-read flow
             </p>
           </div>
         </div>
 
         {/* Search Bar */}
-        <div className="relative w-full md:w-64 lg:w-80">
+        <div className="relative w-full md:w-64 lg:w-72">
           <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
           <input
             type="text"
@@ -60,6 +60,16 @@ export const Header: React.FC<HeaderProps> = ({
         {/* Stats & Actions */}
         <div className="flex items-center gap-2 lg:gap-3 flex-wrap justify-end w-full md:w-auto">
           
+          {/* Memory Score Pill */}
+          <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-purple-500/10 border border-purple-500/20 text-purple-300 text-xs font-semibold" title="Chapter Memory Recall Accuracy">
+            <Brain className="w-4 h-4 text-purple-400" />
+            <span>
+              {goal.quizzesCompletedCount > 0 
+                ? `${Math.round(goal.memoryQuizScoreTotal / goal.quizzesCompletedCount)}% Recall` 
+                : 'Memory Quiz Ready'}
+            </span>
+          </div>
+
           {/* Streak Pill */}
           <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-amber-500/10 border border-amber-500/20 text-amber-400 text-xs font-semibold" title="Daily Reading Streak">
             <Flame className="w-4 h-4 text-amber-500 animate-bounce" />
@@ -94,7 +104,7 @@ export const Header: React.FC<HeaderProps> = ({
 
       </div>
 
-      {/* Tabs */}
+      {/* Navigation Tabs */}
       <div className="max-w-7xl mx-auto flex items-center gap-2 mt-4 pt-3 border-t border-slate-800/80 overflow-x-auto no-scrollbar">
         <button
           onClick={() => setActiveTab('library')}
@@ -109,8 +119,33 @@ export const Header: React.FC<HeaderProps> = ({
         </button>
 
         <button
-          onClick={() => setActiveTab('flow-chain')}
+          onClick={() => setActiveTab('gallery')}
+          className={`flex items-center gap-2 px-4 py-2 rounded-xl font-medium text-sm transition-all whitespace-nowrap ${
+            activeTab === 'gallery'
+              ? 'bg-amber-500/15 text-amber-300 border border-amber-500/30 shadow-md shadow-amber-500/5'
+              : 'text-gray-400 hover:text-gray-200 hover:bg-slate-800/40 border border-transparent'
+          }`}
+        >
+          <Image className="w-4 h-4 text-amber-400" />
+          <span>Visual Book Gallery</span>
+        </button>
+
+        <button
+          onClick={() => setActiveTab('chapter-memory')}
           className={`flex items-center gap-2 px-4 py-2 rounded-xl font-medium text-sm transition-all whitespace-nowrap relative ${
+            activeTab === 'chapter-memory'
+              ? 'bg-purple-500/15 text-purple-300 border border-purple-500/30 shadow-md shadow-purple-500/5'
+              : 'text-gray-400 hover:text-gray-200 hover:bg-slate-800/40 border border-transparent'
+          }`}
+        >
+          <Brain className="w-4 h-4 text-purple-400" />
+          <span>Chapter Memory Lab</span>
+          <span className="w-2 h-2 rounded-full bg-purple-400 animate-ping"></span>
+        </button>
+
+        <button
+          onClick={() => setActiveTab('flow-chain')}
+          className={`flex items-center gap-2 px-4 py-2 rounded-xl font-medium text-sm transition-all whitespace-nowrap ${
             activeTab === 'flow-chain'
               ? 'bg-purple-500/15 text-purple-300 border border-purple-500/30 shadow-md shadow-purple-500/5'
               : 'text-gray-400 hover:text-gray-200 hover:bg-slate-800/40 border border-transparent'
@@ -118,7 +153,6 @@ export const Header: React.FC<HeaderProps> = ({
         >
           <GitFork className="w-4 h-4 text-purple-400" />
           <span>Post-Read Flow Chain</span>
-          <span className="w-2 h-2 rounded-full bg-purple-400 animate-ping"></span>
         </button>
 
         <button

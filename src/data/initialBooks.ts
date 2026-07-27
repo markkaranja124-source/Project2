@@ -1,4 +1,5 @@
 import type { Book, UserReadingGoal } from '../types/book';
+import { DUNE_CHAPTER_QUIZZES, ATOMIC_HABITS_CHAPTER_QUIZZES, DEEP_WORK_CHAPTER_QUIZZES } from './chapterQuizzes';
 
 export const INITIAL_BOOKS: Book[] = [
   {
@@ -11,9 +12,11 @@ export const INITIAL_BOOKS: Book[] = [
     status: 'currently-reading',
     format: 'paperback',
     coverGradient: 'from-amber-600 via-orange-600 to-yellow-700',
+    coverImage: '/images/cover_dune.png',
     coverEmoji: '⏳',
     startDate: '2026-07-01',
     description: 'Set on the desert planet Arrakis, Dune is the story of Paul Atreides, heir to a noble family in a complex feudal interstellar empire.',
+    chapterQuizzes: DUNE_CHAPTER_QUIZZES,
     flowRecommendations: [
       {
         id: 'rec-1',
@@ -36,22 +39,37 @@ export const INITIAL_BOOKS: Book[] = [
         description: 'A lethal security android who just wants to watch soap operas gets drawn into human danger.',
         estimatedPages: 160,
         matchScore: 92,
-      },
-      {
-        id: 'rec-3',
-        title: 'Foundation',
-        author: 'Isaac Asimov',
-        genre: 'Classic Sci-Fi',
-        coverGradient: 'from-blue-600 via-indigo-800 to-slate-900',
-        reasonTag: 'Galactic Empire Strategy',
-        description: 'Hari Seldon uses psychohistory to predict the fall of the Galactic Empire and save civilization.',
-        estimatedPages: 255,
-        matchScore: 89,
       }
     ]
   },
   {
     id: 'book-2',
+    title: 'Atomic Habits',
+    author: 'James Clear',
+    genre: 'Self-Improvement',
+    totalPages: 320,
+    currentPage: 320,
+    status: 'completed',
+    format: 'hardcover',
+    coverGradient: 'from-yellow-500 via-amber-600 to-amber-800',
+    coverImage: '/images/cover_atomic_habits.png',
+    coverEmoji: '⚡',
+    startDate: '2026-06-01',
+    completedDate: '2026-06-28',
+    rating: 5,
+    description: 'An easy and proven way to build good habits and break bad ones.',
+    chapterQuizzes: ATOMIC_HABITS_CHAPTER_QUIZZES,
+    review: {
+      rating: 5,
+      completedDate: '2026-06-28',
+      favoriteQuote: 'You do not rise to the level of your goals. You fall to the level of your systems.',
+      keyTakeaway: 'Focus 1% better every day through small environmental friction changes.',
+      selectedMoods: ['Inspiring', 'Educational'],
+      chosenNextBookId: 'book-3'
+    }
+  },
+  {
+    id: 'book-3',
     title: 'Deep Work',
     author: 'Cal Newport',
     genre: 'Productivity & Focus',
@@ -62,57 +80,10 @@ export const INITIAL_BOOKS: Book[] = [
     coverGradient: 'from-cyan-600 via-blue-700 to-indigo-900',
     coverEmoji: '🎯',
     startDate: '2026-07-10',
-    previousBookId: 'book-3',
-    flowConnectionReason: 'Follow-up to habit building after finishing Atomic Habits',
-    description: 'Rules for focused success in a distracted world. Deep work is the ability to focus without distraction on a demanding task.',
-    flowRecommendations: [
-      {
-        id: 'rec-4',
-        title: 'Four Thousand Weeks',
-        author: 'Oliver Burkeman',
-        genre: 'Philosophy of Time',
-        coverGradient: 'from-rose-600 via-red-700 to-orange-800',
-        reasonTag: 'Mindful Counter-Perspective',
-        description: 'Time management for mortals — embracing human limitations with clarity and grace.',
-        estimatedPages: 288,
-        matchScore: 95,
-      },
-      {
-        id: 'rec-5',
-        title: 'Make Time',
-        author: 'Jake Knapp & John Zeratsky',
-        genre: 'Practical Guide',
-        coverGradient: 'from-amber-500 via-yellow-600 to-lime-600',
-        reasonTag: 'Actionable Daily Tactics',
-        description: 'Focus on what matters every day with simple 4-step framework.',
-        estimatedPages: 300,
-        matchScore: 88,
-      }
-    ]
-  },
-  {
-    id: 'book-3',
-    title: 'Atomic Habits',
-    author: 'James Clear',
-    genre: 'Self-Improvement',
-    totalPages: 320,
-    currentPage: 320,
-    status: 'completed',
-    format: 'hardcover',
-    coverGradient: 'from-yellow-500 via-amber-600 to-amber-800',
-    coverEmoji: '⚡',
-    startDate: '2026-06-01',
-    completedDate: '2026-06-28',
-    rating: 5,
-    description: 'An easy and proven way to build good habits and break bad ones.',
-    review: {
-      rating: 5,
-      completedDate: '2026-06-28',
-      favoriteQuote: 'You do not rise to the level of your goals. You fall to the level of your systems.',
-      keyTakeaway: 'Focus 1% better every day through small environmental friction changes.',
-      selectedMoods: ['Inspiring', 'Educational'],
-      chosenNextBookId: 'book-2'
-    }
+    previousBookId: 'book-2',
+    flowConnectionReason: 'Follow-up habit building focus after Atomic Habits',
+    description: 'Rules for focused success in a distracted world. Deep work is the ability to focus without distraction on demanding tasks.',
+    chapterQuizzes: DEEP_WORK_CHAPTER_QUIZZES,
   },
   {
     id: 'book-4',
@@ -128,17 +99,7 @@ export const INITIAL_BOOKS: Book[] = [
     startDate: '2026-05-10',
     completedDate: '2026-05-30',
     rating: 4,
-    previousBookId: 'book-5',
-    flowConnectionReason: 'Explored artificial intelligence consciousness after Project Hail Mary',
-    description: 'The story of Klara, an Artificial Friend with outstanding observational qualities, who watches the behavior of those who enter the store.',
-    review: {
-      rating: 4,
-      completedDate: '2026-05-30',
-      favoriteQuote: 'Do you believe in the human heart? I don’t mean simply the organ, obviously. I mean the poetic sense.',
-      keyTakeaway: 'Technological empathy can reveal human vulnerability in subtle ways.',
-      selectedMoods: ['Cozy & Atmospheric', 'Deep & Philosophical'],
-      chosenNextBookId: 'book-1'
-    }
+    description: 'The story of Klara, an Artificial Friend with outstanding observational qualities, who watches the behavior of those in the store.',
   },
   {
     id: 'book-5',
@@ -155,14 +116,6 @@ export const INITIAL_BOOKS: Book[] = [
     completedDate: '2026-05-08',
     rating: 5,
     description: 'Ryland Grace is the sole survivor on a desperate, last-chance mission to save humanity from extinction.',
-    review: {
-      rating: 5,
-      completedDate: '2026-05-08',
-      favoriteQuote: 'Fist my bump! High-five for science!',
-      keyTakeaway: 'Ingenuity and teamwork overcome cosmic crises.',
-      selectedMoods: ['Fast-Paced Action', 'Mind-Bending'],
-      chosenNextBookId: 'book-4'
-    }
   },
   {
     id: 'book-6',
@@ -175,33 +128,7 @@ export const INITIAL_BOOKS: Book[] = [
     format: 'paperback',
     coverGradient: 'from-slate-800 via-red-950 to-stone-900',
     coverEmoji: '🌌',
-    description: 'Set against the backdrop of China’s Cultural Revolution, a secret military project sends signals into space to establish contact with aliens.',
-  },
-  {
-    id: 'book-7',
-    title: 'Piranesi',
-    author: 'Susanna Clarke',
-    genre: 'Fantasy Mystery',
-    totalPages: 245,
-    currentPage: 0,
-    status: 'up-next',
-    format: 'hardcover',
-    coverGradient: 'from-teal-700 via-emerald-800 to-slate-900',
-    coverEmoji: '🏛️',
-    description: 'Piranesi’s house is no ordinary building: its rooms are infinite, its corridors endless, its walls lined with thousands upon thousands of statues.',
-  },
-  {
-    id: 'book-8',
-    title: 'Tomorrow, and Tomorrow, and Tomorrow',
-    author: 'Gabrielle Zevin',
-    genre: 'Literary Fiction',
-    totalPages: 416,
-    currentPage: 0,
-    status: 'want-to-read',
-    format: 'ebook',
-    coverGradient: 'from-pink-500 via-rose-600 to-purple-800',
-    coverEmoji: '🎮',
-    description: 'Two friends — often in love, but never lovers — come together as creative partners in the world of video game design.',
+    description: 'Set against China’s Cultural Revolution, a secret military project sends signals into space to establish alien contact.',
   }
 ];
 
@@ -209,5 +136,7 @@ export const INITIAL_GOAL: UserReadingGoal = {
   targetBooksYearly: 24,
   currentYearCount: 3,
   streakDays: 14,
-  lastReadDate: '2026-07-28'
+  lastReadDate: '2026-07-28',
+  memoryQuizScoreTotal: 100,
+  quizzesCompletedCount: 3
 };
