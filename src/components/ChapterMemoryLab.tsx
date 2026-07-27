@@ -34,12 +34,10 @@ export const ChapterMemoryLab: React.FC<ChapterMemoryLabProps> = ({
   const [selectedBookId, setSelectedBookId] = useState<string>(defaultBook?.id || '');
   const [selectedChapterIndex, setSelectedChapterIndex] = useState<number>(0);
 
-  // Active quiz state
   const [selectedAnswers, setSelectedAnswers] = useState<Record<string, number>>({});
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [quizScore, setQuizScore] = useState<number | null>(null);
 
-  // Custom question form modal state
   const [isAddingQuestion, setIsAddingQuestion] = useState(false);
   const [newQuestionText, setNewQuestionText] = useState('');
   const [newOpt0, setNewOpt0] = useState('');
@@ -74,7 +72,7 @@ export const ChapterMemoryLab: React.FC<ChapterMemoryLabProps> = ({
 
     if (percent === 100) {
       try {
-        confetti({ particleCount: 80, spread: 60, origin: { y: 0.6 } });
+        confetti({ particleCount: 60, spread: 50, origin: { y: 0.6 } });
       } catch (e) {
         console.log(e);
       }
@@ -96,7 +94,7 @@ export const ChapterMemoryLab: React.FC<ChapterMemoryLabProps> = ({
       questionText: newQuestionText.trim(),
       options: [newOpt0.trim(), newOpt1.trim(), newOpt2.trim() || 'Option C', newOpt3.trim() || 'Option D'],
       correctOptionIndex: correctIdx,
-      explanation: newExplanation.trim() || 'Custom chapter retention insight.',
+      explanation: newExplanation.trim() || 'Chapter concept hint.',
       keyConcept: newConcept.trim() || 'Key Concept'
     };
 
@@ -111,39 +109,35 @@ export const ChapterMemoryLab: React.FC<ChapterMemoryLabProps> = ({
     <div className="space-y-6">
       
       {/* Header Banner */}
-      <div className="glass-card rounded-3xl p-6 border border-purple-500/30 bg-gradient-to-r from-purple-950/40 via-slate-900 to-indigo-950/40 relative overflow-hidden">
-        <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 relative z-10">
-          <div>
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-purple-500/20 border border-purple-500/30 text-purple-300 text-xs font-semibold mb-2">
-              <Brain className="w-4 h-4 text-purple-400 animate-pulse" />
-              <span>Active Recall Memory Engine</span>
-            </div>
-            <h2 className="font-cinzel text-2xl lg:text-3xl font-bold gradient-text-purple">
-              Chapter Memory Boost Lab
-            </h2>
-            <p className="text-sm text-gray-300 mt-1 max-w-2xl">
-              Enhance memory retention while reading. Answer chapter-by-chapter questions to test comprehension and lock key concepts into long-term memory.
-            </p>
-          </div>
-
-          <button
-            onClick={() => setIsAddingQuestion(true)}
-            className="flex items-center gap-1.5 px-4 py-2.5 rounded-xl bg-purple-500/20 hover:bg-purple-500/30 border border-purple-500/40 text-purple-200 text-xs font-bold transition-all whitespace-nowrap"
-          >
-            <Plus className="w-4 h-4 text-purple-400" />
-            <span>Add Custom Chapter Question</span>
-          </button>
+      <div className="glass-card rounded-3xl p-6 border border-gray-200 bg-white/90 shadow-sm flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+        <div>
+          <span className="inline-block px-3 py-1 rounded-full bg-gray-100 border border-gray-300 text-black text-xs font-semibold mb-2">
+            Active Recall Quiz
+          </span>
+          <h2 className="font-cinzel text-2xl lg:text-3xl font-bold text-black">
+            Chapter Memory Quiz
+          </h2>
+          <p className="text-sm text-gray-600 mt-1">
+            Test comprehension chapter by chapter to lock key concepts into memory.
+          </p>
         </div>
+
+        <button
+          onClick={() => setIsAddingQuestion(true)}
+          className="flex items-center gap-1.5 px-4 py-2.5 rounded-xl bg-black hover:bg-gray-800 text-white text-xs font-bold transition-all"
+        >
+          <Plus className="w-4 h-4 text-white" />
+          <span>Add Custom Question</span>
+        </button>
       </div>
 
-      {/* Book & Chapter Selection Strip */}
-      <div className="glass-card rounded-2xl p-4 border border-slate-800 flex flex-col md:flex-row gap-4 justify-between items-stretch md:items-center">
+      {/* Book & Chapter Selector */}
+      <div className="glass-card rounded-2xl p-4 border border-gray-200 bg-white flex flex-col md:flex-row gap-4 justify-between items-stretch md:items-center">
         
-        {/* Book Selector */}
         <div className="flex items-center gap-3">
-          <BookOpen className="w-5 h-5 text-amber-400" />
+          <BookOpen className="w-5 h-5 text-black" />
           <div>
-            <label className="block text-[10px] uppercase font-semibold text-gray-400">Target Book</label>
+            <label className="block text-[10px] uppercase font-bold text-gray-500">Book</label>
             <select
               value={selectedBookId}
               onChange={(e) => {
@@ -151,18 +145,17 @@ export const ChapterMemoryLab: React.FC<ChapterMemoryLabProps> = ({
                 setSelectedChapterIndex(0);
                 handleResetQuiz();
               }}
-              className="bg-slate-900 border border-slate-700 rounded-xl px-3 py-1.5 text-xs text-amber-300 font-bold focus:outline-none focus:border-amber-500"
+              className="bg-white border border-gray-300 rounded-xl px-3 py-1.5 text-xs text-black font-bold focus:outline-none focus:border-black"
             >
               {books.map(b => (
                 <option key={b.id} value={b.id}>
-                  {b.title} by {b.author} ({b.chapterQuizzes?.length || 0} chapters)
+                  {b.title} by {b.author}
                 </option>
               ))}
             </select>
           </div>
         </div>
 
-        {/* Chapter Selector */}
         {selectedBook?.chapterQuizzes && selectedBook.chapterQuizzes.length > 0 && (
           <div className="flex items-center gap-2 overflow-x-auto no-scrollbar py-1">
             {selectedBook.chapterQuizzes.map((chap, idx) => (
@@ -174,8 +167,8 @@ export const ChapterMemoryLab: React.FC<ChapterMemoryLabProps> = ({
                 }}
                 className={`px-3 py-1.5 rounded-xl text-xs font-semibold whitespace-nowrap transition-all ${
                   selectedChapterIndex === idx
-                    ? 'bg-gradient-to-r from-purple-600 to-indigo-600 text-white shadow-md shadow-purple-500/20'
-                    : 'bg-slate-900 text-gray-400 hover:text-gray-200 border border-slate-800'
+                    ? 'bg-black text-white shadow-sm'
+                    : 'bg-white text-gray-700 hover:bg-gray-100 border border-gray-300'
                 }`}
               >
                 Ch. {chap.chapterNumber}: {chap.chapterTitle}
@@ -186,89 +179,80 @@ export const ChapterMemoryLab: React.FC<ChapterMemoryLabProps> = ({
 
       </div>
 
-      {/* Main Quiz Area */}
+      {/* Main Quiz */}
       {!currentChapterQuiz ? (
-        <div className="glass-card rounded-3xl p-12 text-center border border-slate-800">
-          <Brain className="w-12 h-12 text-slate-700 mx-auto mb-3" />
-          <h3 className="font-serif-book font-bold text-lg text-gray-300">No quizzes configured for "{selectedBook?.title}" yet</h3>
-          <p className="text-xs text-gray-500 mt-1 max-w-md mx-auto">
-            Click "Add Custom Chapter Question" above to create active recall memory questions for this book!
+        <div className="glass-card rounded-3xl p-12 text-center border border-gray-200 bg-white">
+          <Brain className="w-12 h-12 text-gray-400 mx-auto mb-3" />
+          <h3 className="font-serif-book font-bold text-lg text-black">No quizzes for "{selectedBook?.title}" yet</h3>
+          <p className="text-xs text-gray-500 mt-1">
+            Click "Add Custom Question" to create questions for this book.
           </p>
           <button
             onClick={() => setIsAddingQuestion(true)}
-            className="mt-4 px-4 py-2 rounded-xl bg-purple-600 text-white text-xs font-bold uppercase tracking-wider inline-flex items-center gap-1.5"
+            className="mt-4 px-4 py-2 rounded-xl bg-black text-white text-xs font-bold uppercase tracking-wider inline-flex items-center gap-1.5"
           >
-            <Plus className="w-4 h-4" /> Create First Question
+            <Plus className="w-4 h-4" /> Add Question
           </button>
         </div>
       ) : (
         <div className="space-y-6">
           
-          {/* Chapter Summary Header */}
-          <div className="glass-card rounded-3xl p-6 border border-slate-800 bg-slate-900/80">
+          <div className="glass-card rounded-3xl p-6 border border-gray-200 bg-white">
             <div className="flex items-center justify-between flex-wrap gap-2 mb-2">
-              <span className="text-xs uppercase tracking-widest font-bold text-amber-400">
-                Chapter {currentChapterQuiz.chapterNumber} Active Recall
+              <span className="text-xs uppercase font-bold text-gray-500">
+                Chapter {currentChapterQuiz.chapterNumber}
               </span>
-              <span className="text-xs text-purple-300 font-semibold bg-purple-950/60 border border-purple-500/30 px-2.5 py-1 rounded-full">
-                {currentChapterQuiz.questions.length} Comprehension Questions
+              <span className="text-xs text-gray-800 font-semibold bg-gray-100 px-2.5 py-1 rounded-full border border-gray-300">
+                {currentChapterQuiz.questions.length} Questions
               </span>
             </div>
-            <h3 className="font-serif-book text-xl font-bold text-gray-100 mb-2">
+            <h3 className="font-serif-book text-xl font-bold text-black mb-2">
               {currentChapterQuiz.chapterTitle}
             </h3>
-            <p className="text-xs text-gray-300 leading-relaxed bg-slate-950 p-3 rounded-xl border border-slate-800/80">
-              <strong className="text-amber-300 font-semibold">Summary Context:</strong> {currentChapterQuiz.summaryText}
+            <p className="text-xs text-gray-700 leading-relaxed bg-gray-50 p-3 rounded-xl border border-gray-200">
+              <strong className="text-black">Context:</strong> {currentChapterQuiz.summaryText}
             </p>
           </div>
 
-          {/* Quiz Score Result Banner */}
           {isSubmitted && quizScore !== null && (
-            <div className={`rounded-3xl p-6 border flex items-center justify-between flex-wrap gap-4 ${
-              quizScore >= 80 
-                ? 'bg-emerald-950/60 border-emerald-500/40 text-emerald-200' 
-                : 'bg-amber-950/60 border-amber-500/40 text-amber-200'
-            }`}>
+            <div className="rounded-3xl p-6 border bg-white border-gray-300 text-black flex items-center justify-between flex-wrap gap-4 shadow-sm">
               <div className="flex items-center gap-3">
-                <div className="w-12 h-12 rounded-2xl bg-emerald-500/20 flex items-center justify-center font-bold text-2xl">
-                  <Award className="w-6 h-6 text-emerald-400" />
+                <div className="w-12 h-12 rounded-2xl bg-black text-white flex items-center justify-center font-bold text-xl">
+                  <Award className="w-6 h-6" />
                 </div>
                 <div>
                   <h4 className="font-bold text-base">
-                    Memory Retention Score: {quizScore}%
+                    Score: {quizScore}%
                   </h4>
-                  <p className="text-xs opacity-90">
-                    {quizScore === 100 
-                      ? '🎯 Perfect Recall! Key concepts successfully reinforced into long-term memory.' 
-                      : 'Good effort! Review the explanations below to solidify memory.'}
+                  <p className="text-xs text-gray-600">
+                    {quizScore === 100 ? 'Perfect Recall!' : 'Review explanations below to reinforce key points.'}
                   </p>
                 </div>
               </div>
 
               <button
                 onClick={handleResetQuiz}
-                className="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-xs font-bold text-gray-200 border border-slate-700 transition-all"
+                className="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-gray-100 hover:bg-gray-200 text-xs font-bold text-black border border-gray-300 transition-all"
               >
                 <RotateCcw className="w-3.5 h-3.5" />
-                <span>Retake Chapter Quiz</span>
+                <span>Retake Quiz</span>
               </button>
             </div>
           )}
 
-          {/* Questions List */}
           <div className="space-y-5">
             {currentChapterQuiz.questions.map((q, qIdx) => {
               const selectedOpt = selectedAnswers[q.id];
 
               return (
-                <div key={q.id} className="glass-card rounded-3xl p-6 border border-slate-800 space-y-4">
+                <div key={q.id} className="glass-card rounded-3xl p-6 border border-gray-200 bg-white space-y-4 shadow-xs">
                   
                   <div className="flex items-start justify-between gap-3">
                     <div>
-                      <span className="text-[10px] uppercase font-bold tracking-wider text-purple-400 bg-purple-950/60 px-2 py-0.5 rounded border border-purple-500/30">
-                        Question #{qIdx + 1} • {q.keyConcept}
+                      <span className="text-[10px] uppercase font-bold tracking-wider text-gray-500 bg-gray-100 px-2 py-0.5 rounded border border-gray-200">
+                        Q#{qIdx + 1} • {q.keyConcept}
                       </span>
-                      <h4 className="font-serif-book font-bold text-base text-gray-100 mt-2">
+                      <h4 className="font-serif-book font-bold text-base text-black mt-2">
                         {q.questionText}
                       </h4>
                     </div>
@@ -276,33 +260,32 @@ export const ChapterMemoryLab: React.FC<ChapterMemoryLabProps> = ({
                     {isSubmitted && (
                       <div>
                         {selectedOpt === q.correctOptionIndex ? (
-                          <span className="px-2.5 py-1 rounded-full bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 text-xs font-bold flex items-center gap-1">
+                          <span className="px-2.5 py-1 rounded-full bg-black text-white text-xs font-bold flex items-center gap-1">
                             <CheckCircle2 className="w-3.5 h-3.5" /> Correct
                           </span>
                         ) : (
-                          <span className="px-2.5 py-1 rounded-full bg-red-500/20 text-red-400 border border-red-500/30 text-xs font-bold flex items-center gap-1">
-                            <XCircle className="w-3.5 h-3.5" /> Incorrect
+                          <span className="px-2.5 py-1 rounded-full bg-gray-200 text-gray-900 border border-gray-300 text-xs font-bold flex items-center gap-1">
+                            <XCircle className="w-3.5 h-3.5 text-black" /> Incorrect
                           </span>
                         )}
                       </div>
                     )}
                   </div>
 
-                  {/* Options */}
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                     {q.options.map((optText, optIdx) => {
                       const isOptionSelected = selectedOpt === optIdx;
                       const isCorrectOption = optIdx === q.correctOptionIndex;
 
-                      let btnStyle = 'bg-slate-900/90 border-slate-800 hover:border-purple-500/50 text-gray-300';
+                      let btnStyle = 'bg-white border-gray-300 hover:border-black text-gray-800';
                       if (isOptionSelected) {
-                        btnStyle = 'bg-purple-900/50 border-amber-400 ring-1 ring-amber-400 text-white font-semibold';
+                        btnStyle = 'bg-gray-100 border-black ring-1 ring-black text-black font-bold';
                       }
                       if (isSubmitted) {
                         if (isCorrectOption) {
-                          btnStyle = 'bg-emerald-950/80 border-emerald-500 text-emerald-200 font-bold';
+                          btnStyle = 'bg-black border-black text-white font-bold';
                         } else if (isOptionSelected && !isCorrectOption) {
-                          btnStyle = 'bg-red-950/80 border-red-500 text-red-200 opacity-80';
+                          btnStyle = 'bg-gray-200 border-gray-400 text-gray-900 line-through';
                         }
                       }
 
@@ -314,16 +297,15 @@ export const ChapterMemoryLab: React.FC<ChapterMemoryLabProps> = ({
                           className={`p-3.5 rounded-2xl border text-left text-xs transition-all flex items-center justify-between gap-3 ${btnStyle}`}
                         >
                           <span>{optText}</span>
-                          {isOptionSelected && <Check className="w-4 h-4 text-amber-400 flex-shrink-0" />}
+                          {isOptionSelected && <Check className="w-4 h-4 text-black flex-shrink-0" />}
                         </button>
                       );
                     })}
                   </div>
 
-                  {/* Explanatory Concept Hint after submission */}
                   {isSubmitted && (
-                    <div className="p-3.5 rounded-2xl bg-slate-950 border border-slate-800 text-xs text-gray-300 space-y-1">
-                      <span className="font-bold text-amber-400 block">💡 Memory Insight ({q.keyConcept}):</span>
+                    <div className="p-3.5 rounded-2xl bg-gray-50 border border-gray-200 text-xs text-gray-700 space-y-1">
+                      <span className="font-bold text-black block">Insight ({q.keyConcept}):</span>
                       <p className="leading-relaxed">{q.explanation}</p>
                     </div>
                   )}
@@ -333,19 +315,18 @@ export const ChapterMemoryLab: React.FC<ChapterMemoryLabProps> = ({
             })}
           </div>
 
-          {/* Submit Quiz Action */}
           {!isSubmitted && (
             <div className="flex justify-end pt-3">
               <button
                 onClick={handleSubmitQuiz}
                 disabled={Object.keys(selectedAnswers).length < currentChapterQuiz.questions.length}
-                className={`flex items-center gap-2 px-8 py-3 rounded-2xl font-bold text-xs uppercase tracking-wider shadow-lg transition-all ${
+                className={`flex items-center gap-2 px-8 py-3 rounded-2xl font-bold text-xs uppercase tracking-wider shadow-md transition-all ${
                   Object.keys(selectedAnswers).length >= currentChapterQuiz.questions.length
-                    ? 'bg-gradient-to-r from-emerald-500 to-teal-600 text-slate-950 shadow-emerald-500/30 hover:scale-105 active:scale-95'
-                    : 'bg-slate-800 text-gray-500 cursor-not-allowed border border-slate-700'
+                    ? 'bg-black text-white hover:bg-gray-800'
+                    : 'bg-gray-200 text-gray-400 cursor-not-allowed border border-gray-300'
                 }`}
               >
-                <span>Submit Answers & Calculate Memory Score</span>
+                <span>Submit Answers</span>
                 <ChevronRight className="w-4 h-4 stroke-[3]" />
               </button>
             </div>
@@ -356,23 +337,23 @@ export const ChapterMemoryLab: React.FC<ChapterMemoryLabProps> = ({
 
       {/* Add Custom Question Modal */}
       {isAddingQuestion && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md">
-          <div className="glass-modal rounded-3xl max-w-lg w-full p-6 relative border border-purple-500/30 text-gray-100">
-            <h3 className="font-cinzel font-bold text-lg text-purple-300 mb-4 flex items-center gap-2">
-              <Sparkles className="w-4 h-4 text-amber-400" />
-              Add Custom Chapter Memory Question
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-xs">
+          <div className="glass-modal rounded-3xl max-w-lg w-full p-6 relative border border-gray-300 text-black shadow-2xl">
+            <h3 className="font-cinzel font-bold text-lg text-black mb-4 flex items-center gap-2">
+              <Sparkles className="w-4 h-4 text-black" />
+              Add Custom Question
             </h3>
 
             <form onSubmit={handleAddQuestionSubmit} className="space-y-3">
               <div>
-                <label className="block text-xs font-semibold text-gray-300 mb-1">Question Prompt</label>
+                <label className="block text-xs font-semibold text-gray-700 mb-1">Question Prompt</label>
                 <input
                   type="text"
                   required
                   value={newQuestionText}
                   onChange={(e) => setNewQuestionText(e.target.value)}
-                  placeholder="e.g. What was Paul's reaction to..."
-                  className="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-xs text-gray-100"
+                  placeholder="e.g. What was Paul's reaction..."
+                  className="w-full bg-white border border-gray-300 rounded-xl px-3 py-2 text-xs text-black"
                 />
               </div>
 
@@ -383,7 +364,7 @@ export const ChapterMemoryLab: React.FC<ChapterMemoryLabProps> = ({
                   value={newOpt0}
                   onChange={(e) => setNewOpt0(e.target.value)}
                   placeholder="Option 1"
-                  className="bg-slate-900 border border-slate-700 rounded-xl px-3 py-1.5 text-xs text-gray-100"
+                  className="bg-white border border-gray-300 rounded-xl px-3 py-1.5 text-xs text-black"
                 />
                 <input
                   type="text"
@@ -391,30 +372,30 @@ export const ChapterMemoryLab: React.FC<ChapterMemoryLabProps> = ({
                   value={newOpt1}
                   onChange={(e) => setNewOpt1(e.target.value)}
                   placeholder="Option 2"
-                  className="bg-slate-900 border border-slate-700 rounded-xl px-3 py-1.5 text-xs text-gray-100"
+                  className="bg-white border border-gray-300 rounded-xl px-3 py-1.5 text-xs text-black"
                 />
                 <input
                   type="text"
                   value={newOpt2}
                   onChange={(e) => setNewOpt2(e.target.value)}
                   placeholder="Option 3"
-                  className="bg-slate-900 border border-slate-700 rounded-xl px-3 py-1.5 text-xs text-gray-100"
+                  className="bg-white border border-gray-300 rounded-xl px-3 py-1.5 text-xs text-black"
                 />
                 <input
                   type="text"
                   value={newOpt3}
                   onChange={(e) => setNewOpt3(e.target.value)}
                   placeholder="Option 4"
-                  className="bg-slate-900 border border-slate-700 rounded-xl px-3 py-1.5 text-xs text-gray-100"
+                  className="bg-white border border-gray-300 rounded-xl px-3 py-1.5 text-xs text-black"
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-gray-300 mb-1">Which option is correct?</label>
+                <label className="block text-xs font-semibold text-gray-700 mb-1">Correct Option</label>
                 <select
                   value={correctIdx}
                   onChange={(e) => setCorrectIdx(parseInt(e.target.value, 10))}
-                  className="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-1.5 text-xs text-amber-300 font-bold"
+                  className="w-full bg-white border border-gray-300 rounded-xl px-3 py-1.5 text-xs text-black font-bold"
                 >
                   <option value={0}>Option 1</option>
                   <option value={1}>Option 2</option>
@@ -424,24 +405,24 @@ export const ChapterMemoryLab: React.FC<ChapterMemoryLabProps> = ({
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-gray-300 mb-1">Key Concept / Memory Insight</label>
+                <label className="block text-xs font-semibold text-gray-700 mb-1">Key Concept</label>
                 <input
                   type="text"
                   value={newConcept}
                   onChange={(e) => setNewConcept(e.target.value)}
-                  placeholder="e.g. Identity-based habits"
-                  className="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-1.5 text-xs text-gray-100"
+                  placeholder="e.g. Memory Retention"
+                  className="w-full bg-white border border-gray-300 rounded-xl px-3 py-1.5 text-xs text-black"
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-gray-300 mb-1">Explanation</label>
+                <label className="block text-xs font-semibold text-gray-700 mb-1">Explanation</label>
                 <textarea
                   rows={2}
                   value={newExplanation}
                   onChange={(e) => setNewExplanation(e.target.value)}
-                  placeholder="Why is this answer correct?"
-                  className="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-xs text-gray-100"
+                  placeholder="Why is this correct?"
+                  className="w-full bg-white border border-gray-300 rounded-xl px-3 py-2 text-xs text-black"
                 />
               </div>
 
@@ -449,13 +430,13 @@ export const ChapterMemoryLab: React.FC<ChapterMemoryLabProps> = ({
                 <button
                   type="button"
                   onClick={() => setIsAddingQuestion(false)}
-                  className="px-4 py-2 rounded-xl bg-slate-800 text-gray-300 text-xs"
+                  className="px-4 py-2 rounded-xl bg-gray-100 hover:bg-gray-200 border border-gray-300 text-gray-800 text-xs font-semibold"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
-                  className="px-4 py-2 rounded-xl bg-purple-600 text-white text-xs font-bold"
+                  className="px-4 py-2 rounded-xl bg-black text-white text-xs font-bold"
                 >
                   Save Question
                 </button>

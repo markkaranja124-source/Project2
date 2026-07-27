@@ -25,22 +25,17 @@ export const Header: React.FC<HeaderProps> = ({
     <header className="sticky top-0 z-40 glass-nav px-4 lg:px-8 py-3.5 transition-all">
       <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
         
-        {/* Brand & Tagline */}
+        {/* Brand */}
         <div className="flex items-center gap-3 self-start md:self-auto cursor-pointer" onClick={() => setActiveTab('library')}>
-          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-amber-500 via-orange-600 to-amber-700 flex items-center justify-center shadow-lg shadow-amber-500/20 text-white font-bold text-xl">
-            <BookOpen className="w-5 h-5 text-slate-950 stroke-[2.5]" />
+          <div className="w-10 h-10 rounded-xl bg-black flex items-center justify-center text-white font-bold text-xl shadow-md">
+            <BookOpen className="w-5 h-5 text-white stroke-[2.5]" />
           </div>
           <div>
-            <div className="flex items-center gap-2">
-              <h1 className="font-cinzel text-xl font-bold tracking-wider gradient-text-gold">
-                READFLOW
-              </h1>
-              <span className="text-[10px] uppercase tracking-widest font-semibold px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-400 border border-amber-500/20">
-                v2 Active Recall
-              </span>
-            </div>
-            <p className="text-xs text-gray-400 font-medium">
-              Book tracker, chapter memory lab & post-read flow
+            <h1 className="font-cinzel text-xl font-bold tracking-wider text-black">
+              READFLOW
+            </h1>
+            <p className="text-xs text-gray-500 font-medium">
+              Book Tracker & Next Read Flow
             </p>
           </div>
         </div>
@@ -52,49 +47,39 @@ export const Header: React.FC<HeaderProps> = ({
             type="text"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder="Search title, author, or genre..."
-            className="w-full bg-slate-900/80 border border-slate-700/60 rounded-xl pl-9 pr-4 py-1.5 text-sm text-gray-200 placeholder-gray-500 focus:outline-none focus:border-amber-500/80 focus:ring-1 focus:ring-amber-500/50 transition-all"
+            placeholder="Search books or author..."
+            className="w-full bg-white border border-gray-300 rounded-xl pl-9 pr-4 py-1.5 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:border-black focus:ring-1 focus:ring-black transition-all shadow-xs"
           />
         </div>
 
         {/* Stats & Actions */}
         <div className="flex items-center gap-2 lg:gap-3 flex-wrap justify-end w-full md:w-auto">
           
-          {/* Memory Score Pill */}
-          <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-purple-500/10 border border-purple-500/20 text-purple-300 text-xs font-semibold" title="Chapter Memory Recall Accuracy">
-            <Brain className="w-4 h-4 text-purple-400" />
-            <span>
-              {goal.quizzesCompletedCount > 0 
-                ? `${Math.round(goal.memoryQuizScoreTotal / goal.quizzesCompletedCount)}% Recall` 
-                : 'Memory Quiz Ready'}
-            </span>
-          </div>
-
-          {/* Streak Pill */}
-          <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-amber-500/10 border border-amber-500/20 text-amber-400 text-xs font-semibold" title="Daily Reading Streak">
-            <Flame className="w-4 h-4 text-amber-500 animate-bounce" />
+          {/* Streak */}
+          <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-gray-100 border border-gray-300 text-gray-800 text-xs font-semibold">
+            <Flame className="w-4 h-4 text-black" />
             <span>{goal.streakDays} Day Streak</span>
           </div>
 
-          {/* Goal Pill */}
-          <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-xs font-semibold" title="2026 Reading Goal Progress">
-            <Target className="w-4 h-4 text-emerald-400" />
+          {/* Goal */}
+          <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-gray-100 border border-gray-300 text-gray-800 text-xs font-semibold">
+            <Target className="w-4 h-4 text-black" />
             <span>{goal.currentYearCount} / {goal.targetBooksYearly} Books</span>
           </div>
 
-          {/* Reset Demo Button */}
+          {/* Reset */}
           <button
             onClick={onResetDemo}
-            title="Reset to sample books demo state"
-            className="p-2 rounded-xl bg-slate-800/60 hover:bg-slate-700/80 text-gray-400 hover:text-gray-200 border border-slate-700/40 transition-colors"
+            title="Reset demo"
+            className="p-2 rounded-xl bg-white hover:bg-gray-100 text-gray-600 border border-gray-300 transition-colors shadow-xs"
           >
             <RotateCcw className="w-4 h-4" />
           </button>
 
-          {/* Add Book Button */}
+          {/* Add Book */}
           <button
             onClick={onOpenAddModal}
-            className="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-400 hover:to-orange-500 text-slate-950 font-bold text-xs uppercase tracking-wider shadow-lg shadow-amber-500/25 active:scale-95 transition-all"
+            className="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-black hover:bg-gray-800 text-white font-bold text-xs uppercase tracking-wider shadow-md active:scale-95 transition-all"
           >
             <Plus className="w-4 h-4 stroke-[3]" />
             <span>Add Book</span>
@@ -105,66 +90,65 @@ export const Header: React.FC<HeaderProps> = ({
       </div>
 
       {/* Navigation Tabs */}
-      <div className="max-w-7xl mx-auto flex items-center gap-2 mt-4 pt-3 border-t border-slate-800/80 overflow-x-auto no-scrollbar">
+      <div className="max-w-7xl mx-auto flex items-center gap-2 mt-4 pt-3 border-t border-gray-200 overflow-x-auto no-scrollbar">
         <button
           onClick={() => setActiveTab('library')}
           className={`flex items-center gap-2 px-4 py-2 rounded-xl font-medium text-sm transition-all whitespace-nowrap ${
             activeTab === 'library'
-              ? 'bg-amber-500/15 text-amber-300 border border-amber-500/30 shadow-md shadow-amber-500/5'
-              : 'text-gray-400 hover:text-gray-200 hover:bg-slate-800/40 border border-transparent'
+              ? 'bg-black text-white shadow-md'
+              : 'text-gray-600 hover:text-black hover:bg-gray-100'
           }`}
         >
           <BookOpen className="w-4 h-4" />
-          <span>My Library & Shelves</span>
+          <span>My Library</span>
         </button>
 
         <button
           onClick={() => setActiveTab('gallery')}
           className={`flex items-center gap-2 px-4 py-2 rounded-xl font-medium text-sm transition-all whitespace-nowrap ${
             activeTab === 'gallery'
-              ? 'bg-amber-500/15 text-amber-300 border border-amber-500/30 shadow-md shadow-amber-500/5'
-              : 'text-gray-400 hover:text-gray-200 hover:bg-slate-800/40 border border-transparent'
+              ? 'bg-black text-white shadow-md'
+              : 'text-gray-600 hover:text-black hover:bg-gray-100'
           }`}
         >
-          <Image className="w-4 h-4 text-amber-400" />
-          <span>Visual Book Gallery</span>
+          <Image className="w-4 h-4" />
+          <span>Visual Gallery</span>
         </button>
 
         <button
           onClick={() => setActiveTab('chapter-memory')}
-          className={`flex items-center gap-2 px-4 py-2 rounded-xl font-medium text-sm transition-all whitespace-nowrap relative ${
+          className={`flex items-center gap-2 px-4 py-2 rounded-xl font-medium text-sm transition-all whitespace-nowrap ${
             activeTab === 'chapter-memory'
-              ? 'bg-purple-500/15 text-purple-300 border border-purple-500/30 shadow-md shadow-purple-500/5'
-              : 'text-gray-400 hover:text-gray-200 hover:bg-slate-800/40 border border-transparent'
+              ? 'bg-black text-white shadow-md'
+              : 'text-gray-600 hover:text-black hover:bg-gray-100'
           }`}
         >
-          <Brain className="w-4 h-4 text-purple-400" />
-          <span>Chapter Memory Lab</span>
-          <span className="w-2 h-2 rounded-full bg-purple-400 animate-ping"></span>
+          <Brain className="w-4 h-4" />
+          <span>Chapter Memory Quiz</span>
         </button>
 
         <button
           onClick={() => setActiveTab('flow-chain')}
           className={`flex items-center gap-2 px-4 py-2 rounded-xl font-medium text-sm transition-all whitespace-nowrap ${
             activeTab === 'flow-chain'
-              ? 'bg-purple-500/15 text-purple-300 border border-purple-500/30 shadow-md shadow-purple-500/5'
-              : 'text-gray-400 hover:text-gray-200 hover:bg-slate-800/40 border border-transparent'
+              ? 'bg-black text-white shadow-md'
+              : 'text-gray-600 hover:text-black hover:bg-gray-100'
           }`}
         >
-          <GitFork className="w-4 h-4 text-purple-400" />
-          <span>Post-Read Flow Chain</span>
+          <GitFork className="w-4 h-4" />
+          <span>Next Read Flow</span>
         </button>
 
         <button
           onClick={() => setActiveTab('analytics')}
           className={`flex items-center gap-2 px-4 py-2 rounded-xl font-medium text-sm transition-all whitespace-nowrap ${
             activeTab === 'analytics'
-              ? 'bg-emerald-500/15 text-emerald-300 border border-emerald-500/30 shadow-md shadow-emerald-500/5'
-              : 'text-gray-400 hover:text-gray-200 hover:bg-slate-800/40 border border-transparent'
+              ? 'bg-black text-white shadow-md'
+              : 'text-gray-600 hover:text-black hover:bg-gray-100'
           }`}
         >
           <BarChart3 className="w-4 h-4" />
-          <span>Reading Insights & Goals</span>
+          <span>Reading Goals</span>
         </button>
       </div>
 

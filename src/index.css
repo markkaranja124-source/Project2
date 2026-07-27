@@ -1,30 +1,24 @@
-@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700&family=Inter:wght@300;400;500;600;700;800&family=Playfair+Display:ital,wght@0,600;0,700;1,400&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&family=Inter:wght@300;400;500;600;700;800&family=Playfair+Display:ital,wght@0,600;0,700;1,400&display=swap');
 @import "tailwindcss";
 
-
-
 :root {
-  --bg-primary: #0b0f19;
-  --bg-surface: #131b2e;
-  --bg-card: rgba(23, 32, 54, 0.7);
-  --border-color: rgba(255, 255, 255, 0.08);
-  --accent-gold: #f59e0b;
-  --accent-emerald: #10b981;
-  --accent-purple: #8b5cf6;
-  --text-main: #f3f4f6;
-  --text-muted: #9ca3af;
+  --bg-primary: #f8fafc;
+  --bg-surface: #ffffff;
+  --border-color: rgba(0, 0, 0, 0.1);
+  --text-main: #0f172a;
+  --text-muted: #64748b;
 }
 
 body {
   margin: 0;
   padding: 0;
-  background-color: #080c14;
-  color: var(--text-main);
-  font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  background-color: #f8fafc;
+  color: #0f172a;
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
   min-height: 100vh;
   overflow-x: hidden;
   background-image: 
-    linear-gradient(to bottom, rgba(8, 12, 20, 0.85), rgba(8, 12, 20, 0.92)),
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.72), rgba(255, 255, 255, 0.80)),
     url('/images/library_hero.png');
   background-size: cover;
   background-position: center center;
@@ -40,68 +34,49 @@ body {
   font-family: 'Cinzel', serif;
 }
 
-/* Glassmorphism utility */
+/* Minimalist Black & White Glassmorphism */
 .glass-card {
-  background: rgba(19, 27, 46, 0.65);
+  background: rgba(255, 255, 255, 0.90);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.5);
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.08);
 }
 
 .glass-modal {
-  background: rgba(15, 23, 42, 0.92);
+  background: rgba(255, 255, 255, 0.97);
   backdrop-filter: blur(24px);
   -webkit-backdrop-filter: blur(24px);
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7);
+  border: 1px solid rgba(0, 0, 0, 0.12);
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.2);
 }
 
 .glass-nav {
-  background: rgba(11, 15, 25, 0.8);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.90);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.08);
 }
 
-/* Custom book cover spine 3D effect */
+/* Custom 3D Book Cover Effect */
 .book-cover-3d {
   position: relative;
   transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.3s ease;
   transform-style: preserve-3d;
   box-shadow: 
-    -4px 6px 15px -2px rgba(0, 0, 0, 0.5),
-    inset -2px 0 3px rgba(0, 0, 0, 0.3),
-    inset 2px 0 3px rgba(255, 255, 255, 0.15);
+    -4px 6px 15px -2px rgba(0, 0, 0, 0.15),
+    inset -2px 0 3px rgba(0, 0, 0, 0.2);
 }
 
 .book-cover-3d:hover {
-  transform: translateY(-6px) rotateY(-4deg) scale(1.02);
-  box-shadow: 
-    -8px 12px 25px -4px rgba(0, 0, 0, 0.6),
-    0 0 20px rgba(245, 158, 11, 0.2);
+  transform: translateY(-6px) scale(1.02);
+  box-shadow: -8px 12px 25px -4px rgba(0, 0, 0, 0.25);
 }
 
-/* Spine line simulation */
-.book-cover-3d::before {
-  content: '';
-  position: absolute;
-  left: 10px;
-  top: 0;
-  bottom: 0;
-  width: 2px;
-  background: rgba(255, 255, 255, 0.2);
-  box-shadow: 1px 0 2px rgba(0, 0, 0, 0.3);
-}
-
-/* Flow connector animated line */
+/* Flow Line Animation */
 @keyframes flowPulse {
-  0% {
-    stroke-dashoffset: 24;
-  }
-  100% {
-    stroke-dashoffset: 0;
-  }
+  0% { stroke-dashoffset: 24; }
+  100% { stroke-dashoffset: 0; }
 }
 
 .flow-line-animated {
@@ -109,23 +84,9 @@ body {
   animation: flowPulse 1.2s linear infinite;
 }
 
-/* Glowing text gradients */
-.gradient-text-gold {
-  background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 50%, #d97706 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-}
-
-.gradient-text-purple {
-  background: linear-gradient(135deg, #c084fc 0%, #a855f7 50%, #7e22ce 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-}
-
-.gradient-text-emerald {
-  background: linear-gradient(135deg, #34d399 0%, #10b981 50%, #059669 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
+/* Minimalist Text Gradients */
+.gradient-text-gold, .gradient-text-purple, .gradient-text-emerald {
+  color: #0f172a;
 }
 
 /* Custom Scrollbar */
@@ -134,26 +95,12 @@ body {
   height: 8px;
 }
 ::-webkit-scrollbar-track {
-  background: rgba(11, 15, 25, 0.6);
+  background: rgba(255, 255, 255, 0.6);
 }
 ::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.15);
+  background: rgba(0, 0, 0, 0.2);
   border-radius: 4px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(245, 158, 11, 0.4);
-}
-
-/* Pulsing highlight animation for next recommendation */
-@keyframes pulseGlow {
-  0%, 100% {
-    box-shadow: 0 0 15px rgba(245, 158, 11, 0.2);
-  }
-  50% {
-    box-shadow: 0 0 25px rgba(245, 158, 11, 0.5);
-  }
-}
-
-.pulse-glow {
-  animation: pulseGlow 2.5s infinite ease-in-out;
+  background: rgba(0, 0, 0, 0.4);
 }
